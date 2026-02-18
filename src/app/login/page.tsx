@@ -83,13 +83,13 @@ export default function LoginPage() {
             <div className="gradient-bg" />
 
             {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-white/5">
+            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-border">
                 <div className="container-main flex items-center justify-between h-16 md:h-20">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">R</span>
+                        <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+                            <span className="text-background font-bold text-sm">R</span>
                         </div>
-                        <span className="text-xl font-bold text-primary">Resolve<span className="gradient-text">.Ai</span></span>
+                        <span className="text-xl font-bold text-foreground">Resolve<span className="text-secondary">.Ai</span></span>
                     </Link>
                     <ThemeToggle />
                 </div>
@@ -101,10 +101,10 @@ export default function LoginPage() {
                     <div className="glass-card p-8">
                         {/* Header */}
                         <div className="text-center mb-8">
-                            <h1 className="text-2xl font-bold text-white mb-2">
+                            <h1 className="text-2xl font-bold text-foreground mb-2">
                                 {mode === "signup" ? "Create Account" : "Welcome Back"}
                             </h1>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-secondary text-sm">
                                 {mode === "signup"
                                     ? "Join Resolve.Ai to save your progress"
                                     : "Sign in to continue your crisis navigation"}
@@ -112,17 +112,17 @@ export default function LoginPage() {
                         </div>
 
                         {/* Auth Mode Tabs */}
-                        <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-xl">
+                        <div className="flex gap-2 mb-6 p-1 bg-surface border border-border rounded-xl">
                             <button
                                 onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
-                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === "login" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === "login" ? "bg-foreground text-background" : "text-secondary hover:text-foreground"
                                     }`}
                             >
                                 Email Login
                             </button>
                             <button
                                 onClick={() => { setMode("otp"); setError(""); setSuccess(""); setOtpSent(false); }}
-                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === "otp" ? "bg-purple-500 text-white" : "text-gray-400 hover:text-white"
+                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === "otp" ? "bg-foreground text-background" : "text-secondary hover:text-foreground"
                                     }`}
                             >
                                 Phone OTP
@@ -131,12 +131,12 @@ export default function LoginPage() {
 
                         {/* Error/Success Messages */}
                         {error && (
-                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                            <div className="mb-4 p-3 bg-surface border border-border rounded-lg text-foreground text-sm">
                                 {error}
                             </div>
                         )}
                         {success && (
-                            <div className="mb-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
+                            <div className="mb-4 p-3 bg-surface border border-border rounded-lg text-foreground text-sm">
                                 {success}
                             </div>
                         )}
@@ -144,7 +144,7 @@ export default function LoginPage() {
                         {/* Google Sign In */}
                         <button
                             onClick={signInWithGoogle}
-                            className="w-full flex items-center justify-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-all mb-4"
+                            className="w-full flex items-center justify-center gap-3 p-3 bg-surface border border-border rounded-xl text-foreground hover:border-border-hover transition-all mb-4"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -156,9 +156,9 @@ export default function LoginPage() {
                         </button>
 
                         <div className="flex items-center gap-4 my-6">
-                            <div className="flex-1 h-px bg-white/10"></div>
-                            <span className="text-gray-500 text-sm">or</span>
-                            <div className="flex-1 h-px bg-white/10"></div>
+                            <div className="flex-1 h-px bg-border"></div>
+                            <span className="text-muted text-sm">or</span>
+                            <div className="flex-1 h-px bg-border"></div>
                         </div>
 
                         {/* Email/Password Form */}
@@ -166,12 +166,12 @@ export default function LoginPage() {
                             <form onSubmit={handleEmailAuth} className="space-y-4">
                                 {mode === "signup" && (
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-1">Full Name</label>
+                                        <label className="block text-sm text-secondary mb-1">Full Name</label>
                                         <input
                                             type="text"
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                            className="w-full p-3 bg-surface border border-border rounded-xl text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-border-hover"
                                             placeholder="Your name"
                                             required
                                         />
@@ -216,7 +216,7 @@ export default function LoginPage() {
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
                                     <div className="flex gap-2">
-                                        <div className="w-16 p-3 bg-white/5 border border-white/10 rounded-xl text-gray-400 text-center">
+                                        <div className="w-16 p-3 bg-surface border border-border rounded-xl text-secondary text-center">
                                             +91
                                         </div>
                                         <input
@@ -234,7 +234,7 @@ export default function LoginPage() {
 
                                 {otpSent && (
                                     <div>
-                                        <label className="block text-sm text-gray-400 mb-1">Enter OTP</label>
+                                        <label className="block text-sm text-secondary mb-1">Enter OTP</label>
                                         <input
                                             type="text"
                                             value={otp}
@@ -269,11 +269,11 @@ export default function LoginPage() {
 
                         {/* Toggle Login/Signup */}
                         {mode !== "otp" && (
-                            <p className="mt-6 text-center text-gray-400 text-sm">
+                            <p className="mt-6 text-center text-secondary text-sm">
                                 {mode === "login" ? "Don't have an account? " : "Already have an account? "}
                                 <button
                                     onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setSuccess(""); }}
-                                    className="text-purple-400 hover:text-purple-300"
+                                    className="text-foreground hover:text-secondary underline"
                                 >
                                     {mode === "login" ? "Sign up" : "Sign in"}
                                 </button>

@@ -19,17 +19,17 @@ export default function OtherIssuesPage() {
             <div className="gradient-bg" />
 
             {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-white/5">
+            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-border">
                 <div className="container-main flex items-center justify-between h-16 md:h-20">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">R</span>
+                        <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+                            <span className="text-background font-bold text-sm">R</span>
                         </div>
-                        <span className="text-xl font-bold text-primary">Resolve<span className="gradient-text">.Ai</span></span>
+                        <span className="text-xl font-bold text-foreground">Resolve<span className="text-secondary">.Ai</span></span>
                     </Link>
                     <div className="flex items-center gap-3">
                         <ThemeToggle />
-                        <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
+                        <Link href="/" className="text-secondary hover:text-foreground transition-colors text-sm flex items-center gap-1">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
@@ -45,25 +45,27 @@ export default function OtherIssuesPage() {
                     {/* Header */}
                     <div className="text-center mb-6">
                         <div className="inline-flex items-center gap-2 glass-card px-4 py-2 mb-4">
-                            <span className="text-2xl">🤖</span>
-                            <span className="text-sm text-gray-300">AI-Powered Assistance</span>
+                            <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-sm text-secondary">AI-Powered Assistance</span>
                         </div>
-                        <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
-                            Other Issues? <span className="gradient-text">Ask AI</span>
+                        <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-2">
+                            Other Issues? <span className="text-secondary">Ask AI</span>
                         </h1>
-                        <p className="text-gray-400 text-sm max-w-xl mx-auto">
+                        <p className="text-secondary text-sm max-w-xl mx-auto">
                             Describe any crisis situation and our AI assistant will guide you with actionable steps.
                         </p>
                     </div>
 
                     {/* Quick Prompts */}
                     <div className="glass-card p-4 mb-4">
-                        <p className="text-xs text-gray-400 mb-3">Quick topics:</p>
+                        <p className="text-xs text-muted mb-3">Quick topics:</p>
                         <div className="flex flex-wrap gap-2">
                             {quickPrompts.map((prompt) => (
                                 <button
                                     key={prompt.label}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-300 hover:bg-white/10 hover:border-purple-500/30 transition-all"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs text-secondary hover:text-foreground hover:border-border-hover transition-all"
                                 >
                                     <span>{prompt.icon}</span>
                                     <span>{prompt.label}</span>

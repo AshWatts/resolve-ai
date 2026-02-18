@@ -102,22 +102,22 @@ export function AIChatbot({
                     >
                         <div
                             className={`max-w-[80%] rounded-2xl px-4 py-3 ${message.role === "user"
-                                    ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-                                    : "glass-card"
+                                ? "bg-foreground text-background"
+                                : "glass-card"
                                 }`}
                         >
                             {message.role === "assistant" && (
                                 <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                                        <span className="text-white text-xs">AI</span>
+                                    <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center">
+                                        <span className="text-background text-xs font-bold">R</span>
                                     </div>
-                                    <span className="text-xs text-gray-400">Resolve.Ai Assistant</span>
+                                    <span className="text-xs text-muted">Resolve.Ai Assistant</span>
                                 </div>
                             )}
                             <div className="text-sm whitespace-pre-wrap leading-relaxed">
                                 {message.content}
                             </div>
-                            <div className={`text-xs mt-2 ${message.role === "user" ? "text-white/60" : "text-gray-500"}`}>
+                            <div className={`text-xs mt-2 ${message.role === "user" ? "text-background/60" : "text-muted"}`}>
                                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </div>
                         </div>
@@ -129,13 +129,13 @@ export function AIChatbot({
                     <div className="flex justify-start">
                         <div className="glass-card rounded-2xl px-4 py-3">
                             <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                                    <span className="text-white text-xs">AI</span>
+                                <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center">
+                                    <span className="text-background text-xs font-bold">R</span>
                                 </div>
                                 <div className="flex gap-1">
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
+                                    <span className="w-2 h-2 bg-muted rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
+                                    <span className="w-2 h-2 bg-muted rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
+                                    <span className="w-2 h-2 bg-muted rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
                                 </div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@ export function AIChatbot({
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-white/5 p-4">
+            <div className="border-t border-border p-4">
                 <form onSubmit={handleSubmit} className="flex gap-3">
                     <div className="flex-1 relative">
                         <textarea
@@ -156,7 +156,7 @@ export function AIChatbot({
                             onKeyDown={handleKeyDown}
                             placeholder={placeholder}
                             rows={1}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent resize-none text-sm"
+                            className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-border-hover focus:border-transparent resize-none text-sm"
                             style={{ minHeight: "48px", maxHeight: "120px" }}
                         />
                     </div>
@@ -171,7 +171,7 @@ export function AIChatbot({
                         <span className="hidden sm:inline">Send</span>
                     </button>
                 </form>
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="text-xs text-muted mt-2 text-center">
                     Powered by Gemini AI • Your data is secure and private
                 </p>
             </div>
@@ -184,7 +184,7 @@ export function FloatingChatButton({ onClick }: { onClick: () => void }) {
     return (
         <button
             onClick={onClick}
-            className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all hover:scale-110 flex items-center justify-center z-40"
+            className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-foreground text-background shadow-lg hover:opacity-90 transition-all hover:scale-110 flex items-center justify-center z-40"
             title="Chat with AI Assistant"
         >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,21 +212,21 @@ export function ChatDrawer({ isOpen, onClose, moduleContext, welcomeMessage }: {
             />
 
             {/* Drawer */}
-            <div className="relative w-full sm:w-[480px] h-[70vh] sm:h-[600px] sm:rounded-2xl overflow-hidden glass-card border border-white/10 animate-fade-slide-up">
+            <div className="relative w-full sm:w-[480px] h-[70vh] sm:h-[600px] sm:rounded-2xl overflow-hidden glass-card border border-border animate-fade-slide-up">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-white/5">
+                <div className="flex items-center justify-between p-4 border-b border-border">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">AI</span>
+                        <div className="w-10 h-10 rounded-xl bg-foreground flex items-center justify-center">
+                            <span className="text-background font-bold text-sm">R</span>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-white">AI Assistant</h3>
-                            <p className="text-xs text-gray-400">Powered by Gemini</p>
+                            <h3 className="font-semibold text-foreground">AI Assistant</h3>
+                            <p className="text-xs text-muted">Powered by Gemini</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                        className="w-8 h-8 rounded-lg hover:bg-surface flex items-center justify-center text-muted hover:text-foreground transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

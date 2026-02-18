@@ -5,23 +5,33 @@ import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FloatingChatButton, ChatDrawer } from "@/components/AIChatbot";
 import { ecommerceSubCategories, type SubCategory, type Step } from "@/data/ecommerce-subcategories";
+import { Package, Ban, RefreshCw, HeartCrack, Wallet, type LucideIcon } from "lucide-react";
+
+// Icon mapping for subcategories
+const subcategoryIcons: Record<string, LucideIcon> = {
+    "non-delivery": Package,
+    "fake-product": Ban,
+    "wrong-item": RefreshCw,
+    "damaged-product": HeartCrack,
+    "refund-not-received": Wallet,
+};
 
 // Priority Badge Component
 function PriorityBadge({ level }: { level: "critical" | "urgent" | "important" | "normal" }) {
-    const colors = {
-        critical: "bg-red-500/20 text-red-400 border-red-500/30",
-        urgent: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-        important: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-        normal: "bg-green-500/20 text-green-400 border-green-500/30"
+    const styles = {
+        critical: "bg-foreground text-background",
+        urgent: "bg-surface text-foreground border border-border",
+        important: "bg-surface text-secondary border border-border",
+        normal: "bg-surface text-muted border border-border"
     };
     const labels = {
-        critical: "🔴 Critical",
-        urgent: "🟠 Urgent",
-        important: "🟡 Important",
-        normal: "🟢 Follow-up"
+        critical: "Critical",
+        urgent: "Urgent",
+        important: "Important",
+        normal: "Follow-up"
     };
     return (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${colors[level]}`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles[level]}`}>
             {labels[level]}
         </span>
     );
@@ -29,26 +39,29 @@ function PriorityBadge({ level }: { level: "critical" | "urgent" | "important" |
 
 // Sub-Category Selection Card
 function SubCategoryCard({ subCategory, onClick }: { subCategory: SubCategory; onClick: () => void }) {
+    const IconComponent = subcategoryIcons[subCategory.id] || Package;
     return (
         <button
             onClick={onClick}
-            className="glass-card p-6 text-left hover:border-purple-500/50 transition-all group"
+            className="glass-card p-6 text-left hover:border-border-hover transition-all group"
         >
             <div className="flex items-start gap-4">
-                <div className="text-4xl">{subCategory.icon}</div>
+                <div className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center">
+                    <IconComponent className="w-6 h-6 text-foreground" />
+                </div>
                 <div className="flex-grow">
-                    <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-purple-400 transition-colors">
+                    <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-secondary transition-colors">
                         {subCategory.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3">{subCategory.description}</p>
-                    <div className="flex items-center gap-2 text-xs text-orange-400">
+                    <p className="text-secondary text-sm mb-3">{subCategory.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {subCategory.timeframe}
                     </div>
                 </div>
-                <svg className="w-5 h-5 text-gray-500 group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-muted group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
             </div>
@@ -59,27 +72,31 @@ function SubCategoryCard({ subCategory, onClick }: { subCategory: SubCategory; o
 // Consumer Rights Info Component
 function ConsumerRightsInfo() {
     return (
-        <div className="glass-card p-6 mb-8 border-purple-500/20 bg-purple-500/5">
+        <div className="glass-card p-6 mb-8">
             <div className="flex items-start gap-4">
-                <div className="text-3xl">⚖️</div>
+                <div className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center">
+                    <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                    </svg>
+                </div>
                 <div>
-                    <h3 className="font-bold text-purple-400 text-lg mb-1">Your Consumer Rights</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                    <h3 className="font-bold text-foreground text-lg mb-1">Your Consumer Rights</h3>
+                    <p className="text-secondary text-sm leading-relaxed mb-3">
                         Under the Consumer Protection Act 2019, you have the right to file complaints and seek compensation
-                        for <span className="text-white font-semibold">defective goods, unfair trade practices, and deficient services</span>.
+                        for <span className="text-foreground font-semibold">defective goods, unfair trade practices, and deficient services</span>.
                     </p>
                     <div className="grid grid-cols-3 gap-4 text-center text-xs">
-                        <div className="bg-purple-500/10 rounded-lg p-3">
-                            <div className="font-bold text-purple-400">14404</div>
-                            <div className="text-gray-400">Consumer Helpline</div>
+                        <div className="bg-surface border border-border rounded-lg p-3">
+                            <div className="font-bold text-foreground">14404</div>
+                            <div className="text-muted">Consumer Helpline</div>
                         </div>
-                        <div className="bg-purple-500/10 rounded-lg p-3">
-                            <div className="font-bold text-purple-400">E-Daakhil</div>
-                            <div className="text-gray-400">Online Filing</div>
+                        <div className="bg-surface border border-border rounded-lg p-3">
+                            <div className="font-bold text-foreground">E-Daakhil</div>
+                            <div className="text-muted">Online Filing</div>
                         </div>
-                        <div className="bg-purple-500/10 rounded-lg p-3">
-                            <div className="font-bold text-purple-400">Up to ₹5Cr</div>
-                            <div className="text-gray-400">Can Claim</div>
+                        <div className="bg-surface border border-border rounded-lg p-3">
+                            <div className="font-bold text-foreground">Up to ₹5Cr</div>
+                            <div className="text-muted">Can Claim</div>
                         </div>
                     </div>
                 </div>
@@ -101,11 +118,11 @@ function StepCard({ step, isCompleted, onToggle }: {
             <div className="flex items-start gap-4">
                 <button
                     onClick={onToggle}
-                    className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isCompleted ? 'bg-green-500 border-green-500' : 'border-gray-600 hover:border-gray-400'
+                    className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center flex-shrink-0 mt-1 transition-colors ${isCompleted ? 'bg-foreground border-foreground' : 'border-border hover:border-secondary'
                         }`}
                 >
                     {isCompleted && (
-                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-background" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                     )}
@@ -195,20 +212,20 @@ export default function EcommerceFraudPage() {
             <div className="gradient-bg" />
 
             {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-white/5">
+            <nav className="fixed top-0 left-0 right-0 z-50 nav-blur backdrop-blur-lg border-b border-border">
                 <div className="container-main flex items-center justify-between h-16 md:h-20">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">R</span>
+                        <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+                            <span className="text-background font-bold text-sm">R</span>
                         </div>
-                        <span className="text-xl font-bold text-primary">Resolve<span className="gradient-text">.Ai</span></span>
+                        <span className="text-xl font-bold text-foreground">Resolve<span className="text-secondary">.Ai</span></span>
                     </Link>
                     <div className="flex items-center gap-3">
                         <ThemeToggle />
                         {selectedSubCategory ? (
                             <button
                                 onClick={() => { setSelectedSubCategory(null); setCompletedSteps(new Set()); }}
-                                className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1"
+                                className="text-secondary hover:text-foreground transition-colors text-sm flex items-center gap-1"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -216,7 +233,7 @@ export default function EcommerceFraudPage() {
                                 Change Type
                             </button>
                         ) : (
-                            <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
+                            <Link href="/" className="text-secondary hover:text-foreground transition-colors text-sm flex items-center gap-1">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
