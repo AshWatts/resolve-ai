@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FloatingChatButton, ChatDrawer } from "@/components/AIChatbot";
+import { DocumentGenerator, GenerateDocButton, type DocumentType } from "@/components/DocumentGenerator";
 import { bankFraudSubCategories, type SubCategory, type Step } from "@/data/bank-fraud-subcategories";
 import { Smartphone, CreditCard, Fish, Radio, QrCode, FileText, Sparkles, Bell, type LucideIcon } from "lucide-react";
 
@@ -152,6 +153,7 @@ function StepCard({ step, isCompleted, onToggle }: {
     onToggle: () => void;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showGenerator, setShowGenerator] = useState(false);
 
     return (
         <div className={`glass-card p-6 transition-all ${isCompleted ? 'opacity-60' : ''}`}>
@@ -187,7 +189,24 @@ function StepCard({ step, isCompleted, onToggle }: {
                             <Bell className="w-3.5 h-3.5" />
                             Set Reminder
                         </button>
+                        {step.generatorType && (
+                            <GenerateDocButton
+                                label={`Generate ${step.generatorTitle || 'Draft'}`}
+                                onClick={() => setShowGenerator(true)}
+                            />
+                        )}
                     </div>
+
+                    {step.generatorType && (
+                        <DocumentGenerator
+                            isOpen={showGenerator}
+                            onClose={() => setShowGenerator(false)}
+                            documentType={step.generatorType as DocumentType}
+                            title={step.generatorTitle || 'Generate Document'}
+                            description={`AI-powered ${step.generatorTitle || 'document'} generator`}
+                            isPremium={true}
+                        />
+                    )}
 
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}

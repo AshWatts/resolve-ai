@@ -8,6 +8,8 @@ export interface Step {
     details: string[];
     links: { text: string; url: string }[];
     premiumTemplate?: string;
+    generatorType?: string;
+    generatorTitle?: string;
 }
 
 export interface SubCategory {
@@ -82,7 +84,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                     "Bank must respond within 3 working days"
                 ],
                 links: [],
-                premiumTemplate: "bank-upi-complaint"
+                premiumTemplate: "bank-upi-complaint",
+                generatorType: "complaint-letter",
+                generatorTitle: "Bank Complaint Letter"
             },
             {
                 stepNumber: 5,
@@ -123,7 +127,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                 ],
                 links: [
                     { text: "e-FIR Portal", url: "https://digitalpolice.gov.in" }
-                ]
+                ],
+                generatorType: "fir-draft",
+                generatorTitle: "FIR Draft"
             },
             {
                 stepNumber: 8,
@@ -189,7 +195,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                     "Chargeback timeline: Usually 45-90 days"
                 ],
                 links: [],
-                premiumTemplate: "chargeback-request"
+                premiumTemplate: "chargeback-request",
+                generatorType: "complaint-letter",
+                generatorTitle: "Chargeback Request"
             },
             {
                 stepNumber: 4,
@@ -247,7 +255,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                 ],
                 links: [
                     { text: "RBI CMS Portal", url: "https://cms.rbi.org.in" }
-                ]
+                ],
+                generatorType: "escalation-letter",
+                generatorTitle: "Escalation Letter"
             }
         ]
     },
@@ -309,7 +319,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                     "Update registered mobile/email if compromised"
                 ],
                 links: [],
-                premiumTemplate: "security-breach-alert"
+                premiumTemplate: "security-breach-alert",
+                generatorType: "complaint-letter",
+                generatorTitle: "Security Alert Letter"
             },
             {
                 stepNumber: 5,
@@ -391,7 +403,9 @@ export const bankFraudSubCategories: SubCategory[] = [
                 links: [
                     { text: "e-FIR Portal", url: "https://digitalpolice.gov.in" }
                 ],
-                premiumTemplate: "sim-swap-fir"
+                premiumTemplate: "sim-swap-fir",
+                generatorType: "fir-draft",
+                generatorTitle: "FIR Draft"
             },
             {
                 stepNumber: 4,

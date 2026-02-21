@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FloatingChatButton, ChatDrawer } from "@/components/AIChatbot";
+import { DocumentGenerator, GenerateDocButton, type DocumentType } from "@/components/DocumentGenerator";
 import { Smartphone, Apple, Bell } from "lucide-react";
 
 // Priority badge
@@ -38,7 +39,9 @@ function StepCard({
     details,
     links,
     isCompleted,
-    onToggle
+    onToggle,
+    generatorType,
+    generatorTitle
 }: {
     stepNumber: number;
     title: string;
@@ -48,8 +51,11 @@ function StepCard({
     links?: { text: string; url: string; }[];
     isCompleted: boolean;
     onToggle: () => void;
+    generatorType?: DocumentType;
+    generatorTitle?: string;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showGenerator, setShowGenerator] = useState(false);
 
     return (
         <div className={`glass-card p-6 transition-all ${isCompleted ? 'opacity-60' : ''}`}>
@@ -85,7 +91,24 @@ function StepCard({
                             <Bell className="w-3.5 h-3.5" />
                             Set Reminder
                         </button>
+                        {generatorType && (
+                            <GenerateDocButton
+                                label={`Generate ${generatorTitle || 'Draft'}`}
+                                onClick={() => setShowGenerator(true)}
+                            />
+                        )}
                     </div>
+
+                    {generatorType && (
+                        <DocumentGenerator
+                            isOpen={showGenerator}
+                            onClose={() => setShowGenerator(false)}
+                            documentType={generatorType}
+                            title={generatorTitle || 'Generate Document'}
+                            description={`AI-powered ${generatorTitle || 'document'} generator for your situation`}
+                            isPremium={true}
+                        />
+                    )}
 
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
@@ -230,39 +253,60 @@ export default function MobileTheftPage() {
         setCompletedSteps(newCompleted);
     };
 
-    const steps = [
+    const androidSteps = [
         {
             stepNumber: 1,
-            title: "Remote Lock & Wipe Your Device",
-            description: "Use Android's Find My Device or Apple's Find My to immediately lock or erase your phone.",
+            title: "Remote Lock & Wipe via Find My Device",
+            description: "Use Google's Find My Device to immediately locate, lock, or erase your Android phone.",
             priority: "critical" as const,
             details: [
-                "Visit android.com/find or icloud.com/find",
-                "Sign in with your Google/Apple ID",
+                "Visit android.com/find from any browser",
+                "Sign in with the same Google account on your phone",
                 "Select your lost device from the list",
-                "Click 'Secure Device' to lock with a message",
+                "Click 'Secure Device' to lock with a custom message & number",
+                "Use 'Play Sound' to ring even if on silent",
                 "If recovery seems unlikely, use 'Erase Device'",
-                "Locking prevents access to your apps and data",
-                "Even if offline, device will lock when it connects"
+                "Even if phone is offline, it will lock when it reconnects",
+                "Works on Samsung, Pixel, OnePlus, Realme, etc."
             ],
             links: [
-                { text: "Find My Device (Android)", url: "https://www.google.com/android/find" },
-                { text: "Find My iPhone", url: "https://www.icloud.com/find" }
+                { text: "Find My Device", url: "https://www.google.com/android/find" },
+                { text: "Google Account Security", url: "https://myaccount.google.com/security" }
             ]
         },
         {
             stepNumber: 2,
+            title: "Track Your Android Phone's Location",
+            description: "Use Find My Device to see your phone's real-time or last known location on a map.",
+            priority: "critical" as const,
+            details: [
+                "Go to android.com/find and sign in",
+                "Map will show phone's current or last known location",
+                "Location updates every few minutes when online",
+                "On Samsung: also try smartthingsfind.samsung.com",
+                "Share location with police if filing FIR",
+                "Screenshot the location as evidence",
+                "DO NOT attempt to recover the phone yourself — contact police",
+                "If location is unavailable, phone may be off or factory reset"
+            ],
+            links: [
+                { text: "Google Find My Device", url: "https://www.google.com/android/find" },
+                { text: "Samsung SmartThings Find", url: "https://smartthingsfind.samsung.com" }
+            ]
+        },
+        {
+            stepNumber: 3,
             title: "Block Your SIM Card",
             description: "Call your telecom provider immediately to block the SIM and prevent misuse.",
             priority: "critical" as const,
             details: [
                 "Airtel: Call 121 or visit nearest store",
-                "Jio: Call 198 or use MyJio app",
+                "Jio: Call 198 or use MyJio app from another device",
                 "Vi (Vodafone-Idea): Call 199",
                 "BSNL: Call 1800-180-1503",
                 "Carry ID proof when visiting store",
-                "Request new SIM with same number",
-                "SIM swap typically takes 2-4 hours"
+                "Request new SIM with same number (takes 2-4 hours)",
+                "Ask for confirmation SMS/email of SIM block"
             ],
             links: [
                 { text: "Airtel Customer Care", url: "https://www.airtel.in/contact-us" },
@@ -270,25 +314,26 @@ export default function MobileTheftPage() {
             ]
         },
         {
-            stepNumber: 3,
+            stepNumber: 4,
             title: "Secure UPI & Banking Apps",
-            description: "Contact your bank to block UPI and mobile banking immediately.",
+            description: "Contact your bank to block UPI, GPay, PhonePe, and mobile banking immediately.",
             priority: "critical" as const,
             details: [
                 "Call your bank's 24x7 helpline immediately",
                 "SBI: 1800-111-211 | HDFC: 1800-267-6161",
                 "ICICI: 1800-102-4242 | Axis: 1860-419-5555",
                 "Request blocking of mobile banking & UPI",
-                "Also SMS 'BLOCK' to your bank's number",
-                "Keep transaction limits in mind for claims",
-                "Get a reference number for the blocking request"
+                "De-register from GPay: payments.google.com → Settings",
+                "PhonePe: Contact support to delink number",
+                "Paytm: Call 0120-4456-456 to block wallet",
+                "Get a reference number for each blocking request"
             ],
             links: [
                 { text: "NPCI UPI Helpline", url: "https://www.npci.org.in/what-we-do/upi/faqs" }
             ]
         },
         {
-            stepNumber: 4,
+            stepNumber: 5,
             title: "File e-FIR / Police Complaint",
             description: "File an online FIR on your state's citizen portal or visit the nearest police station.",
             priority: "urgent" as const,
@@ -297,63 +342,69 @@ export default function MobileTheftPage() {
                 "Delhi: delhipolice.gov.in",
                 "Maharashtra: citizen.mahapolice.gov.in",
                 "Karnataka: ksp.karnataka.gov.in",
-                "Keep IMEI number ready (dial *#06#)",
-                "Note FIR number for insurance/CEIR claims",
+                "Keep IMEI number ready (check phone box or Google dashboard)",
+                "Find IMEI: Settings → About Phone → IMEI (on another phone)",
+                "Note FIR number — needed for insurance & CEIR",
                 "Visit station within 3 days if filed online"
             ],
             links: [
                 { text: "Delhi Police e-FIR", url: "https://delhipolice.gov.in/" },
                 { text: "Maharashtra e-FIR", url: "https://citizen.mahapolice.gov.in/" }
-            ]
+            ],
+            generatorType: "fir-draft" as DocumentType,
+            generatorTitle: "FIR Draft"
         },
         {
-            stepNumber: 5,
+            stepNumber: 6,
             title: "Block IMEI via CEIR Portal",
             description: "Register your lost phone on the Central Equipment Identity Register to block it nationally.",
             priority: "urgent" as const,
             details: [
                 "Visit ceir.gov.in",
                 "Click 'Block Lost/Stolen Mobile'",
-                "Enter IMEI number (found on box or dial *#06#)",
+                "Enter IMEI number (found on box or Google dashboard)",
                 "Upload copy of FIR report",
                 "Upload ID proof (Aadhaar/PAN)",
-                "Phone will be blacklisted across all networks",
+                "Phone will be blacklisted across all Indian networks",
                 "Can unblock later if phone is recovered"
             ],
             links: [
                 { text: "CEIR Portal", url: "https://www.ceir.gov.in/" }
-            ]
-        },
-        {
-            stepNumber: 6,
-            title: "Change Critical Passwords",
-            description: "Update passwords for email, banking, and social media from a secure device.",
-            priority: "important" as const,
-            details: [
-                "Change Google/Apple ID password first",
-                "Update email passwords (Gmail, Outlook)",
-                "Change banking and UPI PINs",
-                "Update social media passwords",
-                "Review connected apps and revoke access",
-                "Enable 2FA on all important accounts",
-                "Check for any suspicious activity"
             ],
-            links: [
-                { text: "Google Security Checkup", url: "https://myaccount.google.com/security-checkup" },
-                { text: "Apple ID Security", url: "https://appleid.apple.com/" }
-            ]
+            generatorType: "ceir-application" as DocumentType,
+            generatorTitle: "CEIR Application"
         },
         {
             stepNumber: 7,
+            title: "Change Google Account & Passwords",
+            description: "Secure your Google account and change passwords from a trusted device.",
+            priority: "important" as const,
+            details: [
+                "Go to myaccount.google.com/security",
+                "Change Google password immediately",
+                "Review 'Your devices' and sign out the lost phone",
+                "Check 'Recent security activity' for suspicious logins",
+                "Revoke access from third-party apps",
+                "Update Gmail recovery phone/email",
+                "Enable 2-Step Verification if not already on",
+                "Review Google Pay transaction history"
+            ],
+            links: [
+                { text: "Google Security Checkup", url: "https://myaccount.google.com/security-checkup" },
+                { text: "Google Devices", url: "https://myaccount.google.com/device-activity" }
+            ]
+        },
+        {
+            stepNumber: 8,
             title: "Secure Social Media Accounts",
             description: "Log out of all sessions and enable 2FA on social platforms.",
             priority: "important" as const,
             details: [
-                "Instagram: Settings → Security → Login Activity",
-                "WhatsApp: Linked Devices → Log out all",
+                "WhatsApp: Linked Devices → Log out all (from another phone)",
+                "Instagram: Settings → Security → Login Activity → Log out suspicious",
                 "Facebook: Settings → Security → Where You're Logged In",
                 "Twitter/X: Settings → Security → Apps and Sessions",
-                "Telegram: Settings → Devices → Terminate all",
+                "Telegram: Settings → Devices → Terminate all other sessions",
                 "Enable login alerts on all platforms",
                 "Review and remove unknown devices"
             ],
@@ -363,7 +414,7 @@ export default function MobileTheftPage() {
             ]
         },
         {
-            stepNumber: 8,
+            stepNumber: 9,
             title: "File Insurance Claim (If Applicable)",
             description: "If your phone was insured, initiate the claim process with required documents.",
             priority: "normal" as const,
@@ -376,9 +427,195 @@ export default function MobileTheftPage() {
                 "Most claims must be filed within 48-72 hours",
                 "Track claim status regularly"
             ],
-            links: []
+            links: [],
+            generatorType: "insurance-claim" as DocumentType,
+            generatorTitle: "Insurance Claim"
         }
     ];
+
+    const iosSteps = [
+        {
+            stepNumber: 1,
+            title: "Activate Lost Mode via Find My iPhone",
+            description: "Use Apple's Find My to immediately lock your iPhone and display a contact message.",
+            priority: "critical" as const,
+            details: [
+                "Visit icloud.com/find from any browser",
+                "Sign in with your Apple ID",
+                "Select your lost iPhone from the list",
+                "Click 'Mark As Lost' to enable Lost Mode",
+                "Enter a contact number to display on lock screen",
+                "Lost Mode locks the device and disables Apple Pay",
+                "Activation Lock prevents anyone from erasing and reusing it",
+                "If recovery seems unlikely, click 'Erase iPhone'"
+            ],
+            links: [
+                { text: "Find My iPhone", url: "https://www.icloud.com/find" },
+                { text: "Apple ID Security", url: "https://appleid.apple.com/" }
+            ]
+        },
+        {
+            stepNumber: 2,
+            title: "Track Your iPhone's Location",
+            description: "Use Find My or another Apple device to see your iPhone's real-time or last known location.",
+            priority: "critical" as const,
+            details: [
+                "Go to icloud.com/find and sign in with Apple ID",
+                "Map will display current or last known location",
+                "If you have another Apple device, use the Find My app",
+                "Enable 'Notify When Found' for offline iPhones",
+                "Find My network uses other Apple devices to locate yours",
+                "AirTag-like tracking works even when iPhone is off (iPhone 15+)",
+                "Share location screenshot with police as evidence",
+                "DO NOT attempt to recover yourself — contact police"
+            ],
+            links: [
+                { text: "iCloud Find My", url: "https://www.icloud.com/find" },
+                { text: "Apple Find My Support", url: "https://support.apple.com/en-in/find-my" }
+            ]
+        },
+        {
+            stepNumber: 3,
+            title: "Block Your SIM Card",
+            description: "Call your telecom provider immediately to block the SIM and prevent misuse.",
+            priority: "critical" as const,
+            details: [
+                "Airtel: Call 121 or visit nearest store",
+                "Jio: Call 198 or use MyJio app from another device",
+                "Vi (Vodafone-Idea): Call 199",
+                "BSNL: Call 1800-180-1503",
+                "For eSIM: call carrier to deactivate remotely",
+                "Request new SIM/eSIM with same number",
+                "Ask for confirmation of SIM block"
+            ],
+            links: [
+                { text: "Airtel Customer Care", url: "https://www.airtel.in/contact-us" },
+                { text: "Jio Support", url: "https://www.jio.com/en-in/customer-care" }
+            ]
+        },
+        {
+            stepNumber: 4,
+            title: "Secure UPI & Banking Apps",
+            description: "Contact your bank to block UPI, Apple Pay, and mobile banking immediately.",
+            priority: "critical" as const,
+            details: [
+                "Call your bank's 24x7 helpline immediately",
+                "SBI: 1800-111-211 | HDFC: 1800-267-6161",
+                "ICICI: 1800-102-4242 | Axis: 1860-419-5555",
+                "Apple Pay is auto-disabled in Lost Mode",
+                "Still call bank to block UPI linked to your number",
+                "PhonePe/GPay: Contact support to delink number",
+                "Paytm: Call 0120-4456-456 to block wallet",
+                "Get a reference number for each blocking request"
+            ],
+            links: [
+                { text: "NPCI UPI Helpline", url: "https://www.npci.org.in/what-we-do/upi/faqs" }
+            ]
+        },
+        {
+            stepNumber: 5,
+            title: "File e-FIR / Police Complaint",
+            description: "File an online FIR on your state's citizen portal or visit the nearest police station.",
+            priority: "urgent" as const,
+            details: [
+                "Many states allow e-FIR for mobile theft",
+                "Delhi: delhipolice.gov.in",
+                "Maharashtra: citizen.mahapolice.gov.in",
+                "Karnataka: ksp.karnataka.gov.in",
+                "Find IMEI: Check original box, Apple ID account, or iTunes backup",
+                "Go to appleid.apple.com → Devices → select iPhone for IMEI",
+                "Note FIR number — needed for insurance & CEIR",
+                "Visit station within 3 days if filed online"
+            ],
+            links: [
+                { text: "Delhi Police e-FIR", url: "https://delhipolice.gov.in/" },
+                { text: "Maharashtra e-FIR", url: "https://citizen.mahapolice.gov.in/" }
+            ],
+            generatorType: "fir-draft" as DocumentType,
+            generatorTitle: "FIR Draft"
+        },
+        {
+            stepNumber: 6,
+            title: "Block IMEI via CEIR Portal",
+            description: "Register your lost iPhone on the Central Equipment Identity Register to block it nationally.",
+            priority: "urgent" as const,
+            details: [
+                "Visit ceir.gov.in",
+                "Click 'Block Lost/Stolen Mobile'",
+                "Enter IMEI number (found on box or appleid.apple.com)",
+                "Upload copy of FIR report",
+                "Upload ID proof (Aadhaar/PAN)",
+                "iPhone will be blacklisted across all Indian networks",
+                "Can unblock later if phone is recovered"
+            ],
+            links: [
+                { text: "CEIR Portal", url: "https://www.ceir.gov.in/" }
+            ],
+            generatorType: "ceir-application" as DocumentType,
+            generatorTitle: "CEIR Application"
+        },
+        {
+            stepNumber: 7,
+            title: "Change Apple ID & iCloud Password",
+            description: "Secure your Apple account and change passwords from a trusted device.",
+            priority: "important" as const,
+            details: [
+                "Go to appleid.apple.com",
+                "Change Apple ID password immediately",
+                "Review 'Devices' and remove the lost iPhone",
+                "Check for unrecognized sign-ins",
+                "Update iCloud Keychain if compromised",
+                "Review App Store & iTunes purchase history",
+                "Enable Two-Factor Authentication if not already on",
+                "Update trusted phone number to your new SIM"
+            ],
+            links: [
+                { text: "Apple ID Account", url: "https://appleid.apple.com/" },
+                { text: "Apple Support", url: "https://support.apple.com/en-in/apple-id" }
+            ]
+        },
+        {
+            stepNumber: 8,
+            title: "Secure Social Media Accounts",
+            description: "Log out of all sessions and enable 2FA on social platforms.",
+            priority: "important" as const,
+            details: [
+                "WhatsApp: Linked Devices → Log out all (from another phone)",
+                "iMessage: Will stop automatically when SIM is blocked",
+                "Instagram: Settings → Security → Login Activity → Log out suspicious",
+                "Facebook: Settings → Security → Where You're Logged In",
+                "Twitter/X: Settings → Security → Apps and Sessions",
+                "Telegram: Settings → Devices → Terminate all other sessions",
+                "Enable login alerts on all platforms"
+            ],
+            links: [
+                { text: "Facebook Security", url: "https://www.facebook.com/settings?tab=security" },
+                { text: "Instagram Security", url: "https://www.instagram.com/accounts/login_activity/" }
+            ]
+        },
+        {
+            stepNumber: 9,
+            title: "File Insurance Claim (If Applicable)",
+            description: "If your iPhone was covered under AppleCare+ with Theft & Loss or another insurer.",
+            priority: "normal" as const,
+            details: [
+                "AppleCare+ with Theft & Loss: File at support.apple.com",
+                "Requires Find My to have been enabled before loss",
+                "Other insurers: Bajaj Allianz, HDFC Ergo, OneAssist",
+                "Documents needed: FIR copy, CEIR acknowledgment",
+                "Original invoice/purchase proof",
+                "ID proof and filled claim form",
+                "Most claims must be filed within 48-72 hours"
+            ],
+            links: [
+                { text: "AppleCare+ Claims", url: "https://support.apple.com/en-in/applecare" }
+            ],
+            generatorType: "insurance-claim" as DocumentType,
+            generatorTitle: "Insurance Claim"
+        }
+    ];
+
+    const steps = deviceType === 'ios' ? iosSteps : androidSteps;
 
     const completedCount = completedSteps.size;
     const totalSteps = steps.length;
@@ -433,58 +670,85 @@ export default function MobileTheftPage() {
                     {/* Device Selector */}
                     <DeviceSelector onDeviceSelect={(device) => setDeviceType(device)} />
 
-                    {/* Time Selector */}
-                    <TimeSelector onTimeSelect={(hours) => setTimeframe(hours)} />
-
-                    {/* Progress Bar */}
-                    <div className="glass-card p-4 mb-8">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-secondary">Progress</span>
-                            <span className="text-sm font-medium text-foreground">{completedCount} of {totalSteps} completed</span>
-                        </div>
-                        <div className="w-full h-2 bg-surface rounded-full overflow-hidden border border-border">
-                            <div
-                                className="h-full bg-foreground rounded-full transition-all duration-500"
-                                style={{ width: `${progressPercent}%` }}
-                            />
-                        </div>
-                        {completedCount === totalSteps && (
-                            <div className="mt-4 p-4 bg-surface border border-border rounded-xl text-center">
-                                <svg className="w-8 h-8 mx-auto mb-2 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p className="text-foreground font-medium">All steps completed! Great job securing your accounts.</p>
+                    {/* Only show instructions after device is selected */}
+                    {deviceType ? (
+                        <>
+                            {/* Selected device indicator */}
+                            <div className="glass-card p-4 mb-8 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    {deviceType === 'android' ? <Smartphone className="w-5 h-5 text-foreground" /> : <Apple className="w-5 h-5 text-foreground" />}
+                                    <span className="text-sm text-secondary">
+                                        Showing steps for <span className="text-foreground font-semibold">{deviceType === 'android' ? 'Android' : 'iPhone'}</span>
+                                    </span>
+                                </div>
+                                <button onClick={() => setDeviceType(null)} className="text-xs text-muted hover:text-foreground transition-colors">
+                                    Change
+                                </button>
                             </div>
-                        )}
-                    </div>
 
-                    {/* Steps List */}
-                    <div className="space-y-4">
-                        {steps.map((step) => (
-                            <StepCard
-                                key={step.stepNumber}
-                                {...step}
-                                isCompleted={completedSteps.has(step.stepNumber)}
-                                onToggle={() => toggleStep(step.stepNumber)}
-                            />
-                        ))}
-                    </div>
+                            {/* Time Selector */}
+                            <TimeSelector onTimeSelect={(hours) => setTimeframe(hours)} />
 
-                    {/* Premium Upsell */}
-                    <div className="mt-12 glass-card p-8 border-purple-500/20 bg-purple-500/5">
-                        <div className="flex flex-col md:flex-row items-center gap-6">
-                            <div className="text-5xl">⚡</div>
-                            <div className="flex-grow text-center md:text-left">
-                                <h3 className="text-xl font-bold text-white mb-2">Need faster resolution?</h3>
-                                <p className="text-gray-400">
-                                    Upgrade to Pro for AI-powered FIR drafting, auto-filled CEIR forms, and personalized complaint emails.
-                                </p>
+                            {/* Progress Bar */}
+                            <div className="glass-card p-4 mb-8">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm text-secondary">Progress</span>
+                                    <span className="text-sm font-medium text-foreground">{completedCount} of {totalSteps} completed</span>
+                                </div>
+                                <div className="w-full h-2 bg-surface rounded-full overflow-hidden border border-border">
+                                    <div
+                                        className="h-full bg-foreground rounded-full transition-all duration-500"
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                                {completedCount === totalSteps && (
+                                    <div className="mt-4 p-4 bg-surface border border-border rounded-xl text-center">
+                                        <svg className="w-8 h-8 mx-auto mb-2 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <p className="text-foreground font-medium">All steps completed! Great job securing your accounts.</p>
+                                    </div>
+                                )}
                             </div>
-                            <button className="btn-primary whitespace-nowrap">
-                                Upgrade to Pro - ₹199
-                            </button>
+
+                            {/* Steps List */}
+                            <div className="space-y-4">
+                                {steps.map((step) => (
+                                    <StepCard
+                                        key={step.stepNumber}
+                                        {...step}
+                                        isCompleted={completedSteps.has(step.stepNumber)}
+                                        onToggle={() => toggleStep(step.stepNumber)}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Premium Upsell */}
+                            <div className="mt-12 glass-card p-8">
+                                <div className="flex flex-col md:flex-row items-center gap-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-7 h-7 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
+                                    <div className="flex-grow text-center md:text-left">
+                                        <h3 className="text-xl font-bold text-foreground mb-2">Need faster resolution?</h3>
+                                        <p className="text-secondary">
+                                            Upgrade to Pro for AI-powered FIR drafting, auto-filled CEIR forms, and personalized complaint emails.
+                                        </p>
+                                    </div>
+                                    <button className="btn-primary whitespace-nowrap">
+                                        Upgrade to Pro - ₹199
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center py-12 text-muted">
+                            <Smartphone className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                            <p className="text-lg">Select your device type above to see the recovery steps</p>
                         </div>
-                    </div>
+                    )}
                 </div>
             </main>
 

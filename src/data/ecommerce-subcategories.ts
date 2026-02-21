@@ -8,6 +8,8 @@ export interface Step {
     details: string[];
     links: { text: string; url: string }[];
     premiumTemplate?: string;
+    generatorType?: string;
+    generatorTitle?: string;
 }
 
 export interface SubCategory {
@@ -81,7 +83,9 @@ export const ecommerceSubCategories: SubCategory[] = [
                     "Include order ID, timeline, and previous complaint reference"
                 ],
                 links: [],
-                premiumTemplate: "grievance-email"
+                premiumTemplate: "grievance-email",
+                generatorType: "grievance-email",
+                generatorTitle: "Grievance Email"
             },
             {
                 stepNumber: 5,
@@ -125,7 +129,9 @@ export const ecommerceSubCategories: SubCategory[] = [
                 links: [
                     { text: "E-Daakhil Portal", url: "https://edaakhil.nic.in" }
                 ],
-                premiumTemplate: "consumer-court-filing"
+                premiumTemplate: "consumer-court-filing",
+                generatorType: "escalation-letter",
+                generatorTitle: "Consumer Court Filing"
             }
         ]
     },
@@ -200,7 +206,9 @@ export const ecommerceSubCategories: SubCategory[] = [
                     "Give 48-hour deadline for response"
                 ],
                 links: [],
-                premiumTemplate: "counterfeit-complaint"
+                premiumTemplate: "counterfeit-complaint",
+                generatorType: "grievance-email",
+                generatorTitle: "Counterfeit Complaint"
             },
             {
                 stepNumber: 6,

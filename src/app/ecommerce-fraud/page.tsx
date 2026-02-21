@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FloatingChatButton, ChatDrawer } from "@/components/AIChatbot";
+import { DocumentGenerator, GenerateDocButton, type DocumentType } from "@/components/DocumentGenerator";
 import { ecommerceSubCategories, type SubCategory, type Step } from "@/data/ecommerce-subcategories";
 import { Package, Ban, RefreshCw, HeartCrack, Wallet, type LucideIcon } from "lucide-react";
 
@@ -112,6 +113,7 @@ function StepCard({ step, isCompleted, onToggle }: {
     onToggle: () => void;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showGenerator, setShowGenerator] = useState(false);
 
     return (
         <div className={`glass-card p-6 transition-all ${isCompleted ? 'opacity-60' : ''}`}>
@@ -129,22 +131,42 @@ function StepCard({ step, isCompleted, onToggle }: {
                 </button>
                 <div className="flex-grow">
                     <div className="flex flex-wrap items-center gap-3 mb-2">
-                        <span className="text-gray-500 text-sm font-medium">Step {step.stepNumber}</span>
+                        <span className="text-muted text-sm font-medium">Step {step.stepNumber}</span>
                         <PriorityBadge level={step.priority} />
                         {step.premiumTemplate && (
-                            <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-xs border border-purple-500/30">
-                                ✨ Pro Template
+                            <span className="px-2 py-0.5 rounded bg-surface text-secondary text-xs border border-border">
+                                Pro Template
                             </span>
                         )}
                     </div>
-                    <h3 className={`text-lg font-semibold mb-2 ${isCompleted ? 'line-through text-gray-500' : 'text-white'}`}>
+                    <h3 className={`text-lg font-semibold mb-2 ${isCompleted ? 'line-through text-muted' : 'text-foreground'}`}>
                         {step.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-4">{step.description}</p>
+                    <p className="text-secondary text-sm mb-4">{step.description}</p>
+
+                    {step.generatorType && (
+                        <div className="flex items-center justify-end mb-4">
+                            <GenerateDocButton
+                                label={`Generate ${step.generatorTitle || 'Draft'}`}
+                                onClick={() => setShowGenerator(true)}
+                            />
+                        </div>
+                    )}
+
+                    {step.generatorType && (
+                        <DocumentGenerator
+                            isOpen={showGenerator}
+                            onClose={() => setShowGenerator(false)}
+                            documentType={step.generatorType as DocumentType}
+                            title={step.generatorTitle || 'Generate Document'}
+                            description={`AI-powered ${step.generatorTitle || 'document'} generator`}
+                            isPremium={true}
+                        />
+                    )}
 
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="text-purple-400 text-sm font-medium flex items-center gap-1 hover:text-purple-300"
+                        className="text-secondary text-sm font-medium flex items-center gap-1 hover:text-foreground"
                     >
                         {isExpanded ? 'Hide Details' : 'Show Details'}
                         <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,8 +178,8 @@ function StepCard({ step, isCompleted, onToggle }: {
                         <div className="mt-4 space-y-3">
                             <ul className="space-y-2">
                                 {step.details.map((detail, idx) => (
-                                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-300">
-                                        <span className="text-purple-400 mt-1">•</span>
+                                    <li key={idx} className="flex items-start gap-2 text-sm text-secondary">
+                                        <span className="text-muted mt-1">•</span>
                                         <span>{detail}</span>
                                     </li>
                                 ))}
@@ -170,7 +192,7 @@ function StepCard({ step, isCompleted, onToggle }: {
                                             href={link.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg text-purple-400 text-sm hover:bg-purple-500/20 transition-colors"
+                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-surface border border-border rounded-lg text-secondary text-sm hover:text-foreground hover:border-border-hover transition-colors"
                                         >
                                             {link.text}
                                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,14 +306,14 @@ export default function EcommerceFraudPage() {
                             {/* Progress Bar */}
                             <div className="mb-8">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-400">
+                                    <span className="text-sm text-secondary">
                                         Your Progress: {completedSteps.size} of {selectedSubCategory.steps.length} steps
                                     </span>
-                                    <span className="text-sm font-medium text-purple-400">{Math.round(progressPercent)}%</span>
+                                    <span className="text-sm font-medium text-foreground">{Math.round(progressPercent)}%</span>
                                 </div>
-                                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div className="w-full h-2 bg-surface rounded-full overflow-hidden border border-border">
                                     <div
-                                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                                        className="h-full bg-foreground rounded-full transition-all duration-500"
                                         style={{ width: `${progressPercent}%` }}
                                     />
                                 </div>
@@ -310,12 +332,16 @@ export default function EcommerceFraudPage() {
                             </div>
 
                             {/* Pro Upgrade Card */}
-                            <div className="mt-12 glass-card p-8 border-purple-500/20 bg-purple-500/5">
+                            <div className="mt-12 glass-card p-8">
                                 <div className="flex flex-col md:flex-row items-center gap-6">
-                                    <div className="text-5xl">⚡</div>
+                                    <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-7 h-7 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
                                     <div className="flex-grow text-center md:text-left">
-                                        <h3 className="text-xl font-bold text-white mb-2">Get AI-Drafted Complaint Letters</h3>
-                                        <p className="text-gray-400">
+                                        <h3 className="text-xl font-bold text-foreground mb-2">Get AI-Drafted Complaint Letters</h3>
+                                        <p className="text-secondary">
                                             Upgrade to Pro for auto-generated grievance emails, consumer court filing assistance, and priority support.
                                         </p>
                                     </div>

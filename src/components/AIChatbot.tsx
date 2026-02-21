@@ -41,31 +41,53 @@ export function AIChatbot({
         scrollToBottom();
     }, [messages]);
 
-    const simulateAIResponse = (userMessage: string) => {
-        // Simulate AI thinking
+    const getAIResponse = async (userMessage: string, allMessages: Message[]) => {
         setIsTyping(true);
 
-        setTimeout(() => {
-            const responses = [
-                "I understand your concern. Based on what you've described, here are some steps you can take:\n\n1. **Document everything** - Save all relevant screenshots and communications\n2. **Contact the relevant authority** - This could be the police, consumer forum, or regulatory body\n3. **Follow up regularly** - Keep track of your complaint and follow up every few days\n\nWould you like more specific guidance on any of these steps?",
-                "That's a challenging situation. Let me help you navigate this:\n\n• First, make sure you have all your documentation in order\n• Consider reaching out to the appropriate helpline for immediate assistance\n• You may also want to file a formal complaint online\n\nCan you tell me more about the specific circumstances?",
-                "I can help with that! Here's what I recommend:\n\n1. **Immediate Action**: Secure any affected accounts or assets\n2. **Report**: File a complaint with the relevant authority\n3. **Document**: Keep records of all communications\n4. **Follow Up**: Check status regularly and escalate if needed\n\nWhat aspect would you like me to elaborate on?"
-            ];
+        try {
+            // Build message history for Gemini (exclude welcome message)
+            const chatMessages = allMessages
+                .filter(m => m.id !== "welcome")
+                .map(m => ({ role: m.role, content: m.content }));
 
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            // Add current user message
+            chatMessages.push({ role: "user", content: userMessage });
+
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    messages: chatMessages,
+                    moduleContext,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("API request failed");
+            }
+
+            const data = await response.json();
 
             const aiMessage: Message = {
                 id: Date.now().toString(),
                 role: "assistant",
-                content: moduleContext
-                    ? `[${moduleContext.toUpperCase()} Context]\n\n${randomResponse}`
-                    : randomResponse,
-                timestamp: new Date()
+                content: data.message,
+                timestamp: new Date(),
             };
 
             setMessages(prev => [...prev, aiMessage]);
+        } catch (error) {
+            console.error("Chat error:", error);
+            const errorMessage: Message = {
+                id: Date.now().toString(),
+                role: "assistant",
+                content: "I'm sorry, I encountered an error. Please try again. If the issue persists, check your internet connection.",
+                timestamp: new Date(),
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -81,7 +103,7 @@ export function AIChatbot({
 
         setMessages(prev => [...prev, userMessage]);
         setInput("");
-        simulateAIResponse(input.trim());
+        getAIResponse(input.trim(), [...messages, userMessage]);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -114,9 +136,21 @@ export function AIChatbot({
                                     <span className="text-xs text-muted">Resolve.Ai Assistant</span>
                                 </div>
                             )}
-                            <div className="text-sm whitespace-pre-wrap leading-relaxed">
-                                {message.content}
-                            </div>
+                            <div className="text-sm leading-relaxed prose-chat"
+                                dangerouslySetInnerHTML={{
+                                    __html: message.role === "assistant"
+                                        ? message.content
+                                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                            .replace(/^### (.*$)/gm, '<h4 class="font-semibold mt-3 mb-1">$1</h4>')
+                                            .replace(/^## (.*$)/gm, '<h3 class="font-semibold text-base mt-3 mb-1">$1</h3>')
+                                            .replace(/^- (.*$)/gm, '<li class="ml-4 list-disc">$1</li>')
+                                            .replace(/^• (.*$)/gm, '<li class="ml-4 list-disc">$1</li>')
+                                            .replace(/^\d+\. (.*$)/gm, '<li class="ml-4 list-decimal">$1</li>')
+                                            .replace(/\n/g, '<br/>')
+                                        : message.content.replace(/\n/g, '<br/>')
+                                }}
+                            />
                             <div className={`text-xs mt-2 ${message.role === "user" ? "text-background/60" : "text-muted"}`}>
                                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </div>
